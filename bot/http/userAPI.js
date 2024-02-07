@@ -1,5 +1,4 @@
 const { $host } = require("./index");
-const jwtDecode = require('jwt-decode');
 
 const userRegistration = async (name, telegramId, role, dateRegistration, chatId, address) => {
     try {

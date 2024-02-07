@@ -1,3 +1,5 @@
+const config = require('../config');
+
 const generateMenu = async (userRole) => {
     let menu = [
         [{text: 'Меню 😋☕️'}],
@@ -21,7 +23,7 @@ const generateMenu = async (userRole) => {
 const generateAdminMenu = async () => {
     return [
         [{ text: 'Меню управления базой данных 🛢️' }],
-        [{ text: 'Управление заказами 📋' }, {text: 'Управление ботом 👾'}],
+        [{ text: 'Управление заказами 📋', web_app: {url: config.WEB_URL} }, {text: 'Управление ботом 👾'}],
         [{ text: 'Управление сотрудниками 👷‍♂️' }, {text: 'Управление клиентами 😄'}],
     ];
 };

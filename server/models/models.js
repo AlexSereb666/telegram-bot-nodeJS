@@ -24,6 +24,7 @@ const Product = sequelize.define('product', {
     name: {type:DataTypes.STRING},
     price: {type:DataTypes.INTEGER},
     img: {type:DataTypes.STRING},
+    block: {type:DataTypes.BOOLEAN},
 })
 
 const ProductInfo = sequelize.define('product_info', {
@@ -69,6 +70,16 @@ const Order = sequelize.define('order', {
 
 const OrderProduct = sequelize.define('order_product', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+})
+
+const HistoryMaintenance = sequelize.define('history_maintenance', {
+    id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    title: {type:DataTypes.STRING},
+    description: {type:DataTypes.STRING},
+    notes: {type:DataTypes.STRING},
+    status: {type:DataTypes.STRING},
+    dateBegin: {type: DataTypes.DATE},
+    dateEnd: {type: DataTypes.DATE},
 })
 
 User.hasMany(Feedback)
@@ -122,5 +133,6 @@ module.exports = {
     Rating,
     Feedback,
     Order,
-    OrderProduct
+    OrderProduct,
+    HistoryMaintenance
 }
