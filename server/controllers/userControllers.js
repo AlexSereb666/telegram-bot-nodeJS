@@ -1,10 +1,9 @@
-const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {User, Basket} = require('../models/models')
 
-const generateJwt = (user) => {
-    const userObject = user.toJSON();
-    return jwt.sign(userObject, 
+const generateJwt = (data) => {
+    const dataObject = data.toJSON();
+    return jwt.sign(dataObject, 
         process.env.SECRET_KEY, 
         { expiresIn: '1h' });
 };
@@ -70,7 +69,7 @@ class userController {
         }
     }
 
-    // получение пользователя по id //
+    // получение пользователя по id телеграмма //
     async getUserByTelegramId(req, res, next) {
         const telegramId = req.params.id;
 
@@ -79,6 +78,22 @@ class userController {
 
             if (!user) {
                 return res.status(404).json({ message: `Пользователь с id ${telegramId} не найден` });
+            }
+
+            return res.json({ user });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // получение пользователя по id //
+    async getUserById(req, res, next) {
+        const id = req.params.id;
+        try {
+            const user = await User.findOne({ where: { id: id } });
+
+            if (!user) {
+                return res.status(404).json({ message: `Пользователь с id ${id} не найден` });
             }
 
             return res.json({ user });

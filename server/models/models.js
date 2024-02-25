@@ -43,9 +43,15 @@ const ProductView = sequelize.define('product_view', {
     name: {type:DataTypes.STRING},
 })
 
-const PromoCode = sequelize.define('promo_code', {
+const PromoCodeInfo = sequelize.define('promo_code_info', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     discount: {type: DataTypes.INTEGER},
+    status: {type: DataTypes.STRING},
+    validUntilDate: {type: DataTypes.DATE}
+})
+
+const PromoCode = sequelize.define('promo_code', {
+    id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     code: {type: DataTypes.STRING}
 })
 
@@ -59,7 +65,8 @@ const Feedback = sequelize.define('feedback', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type:DataTypes.STRING},
     message: {type:DataTypes.STRING},
-    date: {type: DataTypes.DATE, defaultValue: new Date()}
+    date: {type: DataTypes.DATE, defaultValue: new Date()},
+    status: {type:DataTypes.STRING, defaultValue: 'Открыта'},
 })
 
 const Order = sequelize.define('order', {
@@ -97,8 +104,11 @@ Order.belongsTo(User)
 Basket.hasMany(BasketProductr)
 BasketProductr.belongsTo(Basket)
 
-Product.hasMany(PromoCode)
-PromoCode.belongsTo(Product)
+Product.hasMany(PromoCodeInfo)
+PromoCodeInfo.belongsTo(Product)
+
+PromoCode.hasMany(PromoCodeInfo)
+PromoCodeInfo.belongsTo(PromoCode)
 
 Product.hasMany(BasketProductr)
 BasketProductr.belongsTo(Product)
@@ -130,6 +140,7 @@ module.exports = {
     ProductType,
     ProductView,
     PromoCode,
+    PromoCodeInfo,
     Rating,
     Feedback,
     Order,

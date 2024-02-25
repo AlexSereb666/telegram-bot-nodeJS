@@ -8,7 +8,7 @@ const startCommand = async (bot, msg) => {
     
     try {
         const user = await getUserByTelegramId(telegramId);
-        const menuKeyboard = await generateMenu(user.role);
+        const menuKeyboard = await generateMenu(user.role, user.id);
 
         if (user === 404) {
             await userRegistration(`${msg.from.first_name} ${msg.from.last_name}`, telegramId, 'USER', new Date(), chatId, 'Не указан');
