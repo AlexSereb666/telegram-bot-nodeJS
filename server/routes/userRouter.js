@@ -10,5 +10,8 @@ router.get('/getAllUsers', userController.getAllUsers)
 router.get('/getAllUserRole', userController.getUsersByRole)
 router.delete('/deleteUser/:id', userController.deleteUserByTelegramId)
 router.get('/getUserById/:id', userController.getUserById)
+router.put('/updateAddress/:id', userController.updateUserAddress)
+router.get('/users/:userId/products/:productId/rating', userController.getUserProductRating);
+router.post('/ratings', userController.addRating);
 
 module.exports = router

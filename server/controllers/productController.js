@@ -37,6 +37,15 @@ class productController {
             where: {id},
             include: [{model: ProductInfo, as: 'product_info'}]
         })
+
+        const ratings = await Rating.findAll({ where: { productId: product.id } });
+        if (!ratings || ratings.length === 0) {
+            product.dataValues.averageRating = 0;
+        } else {
+            const totalRating = ratings.reduce((acc, rating) => acc + rating.rate, 0);
+            product.dataValues.averageRating = totalRating / ratings.length;
+        }
+
         return res.json(product)
     }
 

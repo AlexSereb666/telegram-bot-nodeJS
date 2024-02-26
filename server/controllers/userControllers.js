@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const {User, Basket} = require('../models/models')
+const {User, Basket, Product, Rating} = require('../models/models')
 
 const generateJwt = (data) => {
     const dataObject = data.toJSON();
@@ -32,6 +32,29 @@ class userController {
             const updatedUser = await User.update(
                 { name, role, chatId, address },
                 { where: { telegramId: telegramId }, returning: true }
+            );
+
+            if (updatedUser[0] === 0) {
+                return res.status(404).json({ message: `Пользователь с id ${telegramId} не найден` });
+            }
+
+            const [user] = updatedUser[1];
+
+            return res.json({ message: 'Данные пользователя успешно обновлены', user });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // обновление адреса пользователя по id //
+    async updateUserAddress(req, res, next) {
+        const id = req.params.id;
+        const { address } = req.body;
+
+        try {
+            const updatedUser = await User.update(
+                { address },
+                { where: { id: id }, returning: true }
             );
 
             if (updatedUser[0] === 0) {
@@ -141,6 +164,72 @@ class userController {
             }
     
             return res.json({ message: `Пользователь с id ${telegramId} успешно удален` });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // оценка пользователя о продукте //
+    async getUserProductRating(req, res, next) {
+        const { userId, productId } = req.params;
+
+        try {
+            // Найти пользователя по id
+            const user = await User.findByPk(userId);
+            if (!user) {
+                return res.status(404).json({ message: `Пользователь с id ${userId} не найден` });
+            }
+
+            // Найти продукт по id
+            const product = await Product.findByPk(productId);
+            if (!product) {
+                return res.status(404).json({ message: `Продукт с id ${productId} не найден` });
+            }
+
+            // Найти оценку пользователя для продукта
+            const rating = await Rating.findOne({ where: { userId: userId, productId: productId } });
+
+            if (!rating) {
+                return res.json({ rating: 0 });
+                //return res.status(404).json({ message: `Оценка пользователя для продукта не найдена` });
+            }
+
+            return res.json({ rating });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // Добавление оценки пользователя к продукту
+    async addRating(req, res, next) {
+        const { userId, productId, rate } = req.body;
+
+        try {
+            // Проверить, существует ли пользователь с указанным id
+            const user = await User.findByPk(userId);
+            if (!user) {
+                return res.status(404).json({ message: `Пользователь с id ${userId} не найден` });
+            }
+
+            // Проверить, существует ли продукт с указанным id
+            const product = await Product.findByPk(productId);
+            if (!product) {
+                return res.status(404).json({ message: `Продукт с id ${productId} не найден` });
+            }
+
+            // Проверить, существует ли оценка пользователя для продукта
+            let rating = await Rating.findOne({ where: { userId: userId, productId: productId } });
+
+            if (rating) {
+                // Если оценка существует, обновить её
+                rating.rate = rate;
+                await rating.save();
+            } else {
+                // Если оценка не существует, создать новую оценку
+                rating = await Rating.create({ userId, productId, rate });
+            }
+
+            return res.status(201).json({ message: 'Оценка пользователя для продукта успешно добавлена', rating });
         } catch (e) {
             return res.status(500).json({ message: e.message });
         }
