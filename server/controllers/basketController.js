@@ -2,7 +2,7 @@ const { Basket, BasketProductr, Product, Rating } = require('../models/models');
 
 class basketController {
     // получить корзину пользователя //
-    async getBasket(req, res, next) {
+    async getBasket(req, res) {
         try {
             const {id} = req.params;
             const basket = await Basket.findOne({where: {userId: id}, include: [BasketProductr]});
@@ -13,7 +13,7 @@ class basketController {
     }
 
     // добавить продукт в корзину //
-    async addToBasket(req, res, next) {
+    async addToBasket(req, res) {
         try {
             const {userId, productId} = req.body;
             const basket = await Basket.findOne({where: {userId: userId}});
@@ -29,7 +29,7 @@ class basketController {
     }
 
     // удалить продукт из корзины //
-    async removeFromBasket(req, res, next) {
+    async removeFromBasket(req, res) {
         try {
             const { userId } = req.body;
             const { id } = req.params;
@@ -52,7 +52,7 @@ class basketController {
     }
 
     // получение всех продуктов корзины //
-    async getAllProductsInBasket(req, res, next) {
+    async getAllProductsInBasket(req, res) {
         try {
             const { id } = req.params;
     

@@ -43,16 +43,16 @@ const ProductView = sequelize.define('product_view', {
     name: {type:DataTypes.STRING},
 })
 
-const PromoCodeInfo = sequelize.define('promo_code_info', {
+const PromoCodeProduct = sequelize.define('promo_code_product', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    discount: {type: DataTypes.INTEGER},
-    status: {type: DataTypes.STRING},
-    validUntilDate: {type: DataTypes.DATE}
 })
 
 const PromoCode = sequelize.define('promo_code', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    code: {type: DataTypes.STRING}
+    code: {type: DataTypes.STRING, unique: true},
+    discount: {type: DataTypes.INTEGER},
+    status: {type: DataTypes.STRING},
+    validUntilDate: {type: DataTypes.DATE}
 })
 
 const Rating = sequelize.define('rating', {
@@ -104,11 +104,11 @@ Order.belongsTo(User)
 Basket.hasMany(BasketProductr)
 BasketProductr.belongsTo(Basket)
 
-Product.hasMany(PromoCodeInfo)
-PromoCodeInfo.belongsTo(Product)
+Product.hasMany(PromoCodeProduct)
+PromoCodeProduct.belongsTo(Product)
 
-PromoCode.hasMany(PromoCodeInfo)
-PromoCodeInfo.belongsTo(PromoCode)
+PromoCode.hasMany(PromoCodeProduct)
+PromoCodeProduct.belongsTo(PromoCode)
 
 Product.hasMany(BasketProductr)
 BasketProductr.belongsTo(Product)
@@ -140,7 +140,7 @@ module.exports = {
     ProductType,
     ProductView,
     PromoCode,
-    PromoCodeInfo,
+    PromoCodeProduct,
     Rating,
     Feedback,
     Order,

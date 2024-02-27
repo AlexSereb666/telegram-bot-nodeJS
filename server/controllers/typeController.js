@@ -2,7 +2,7 @@ const { ProductType } = require('../models/models')
 
 class typeController { 
     // создание записи //
-    async addType(req, res, next) {
+    async addType(req, res) {
         try {
             let { name } = req.body
             const type = await ProductType.create({ name })
@@ -32,7 +32,7 @@ class typeController {
     }
 
     // редактирование //
-    async editType(req, res, next) {
+    async editType(req, res) {
         try {
             const { id } = req.params;
             const { name } = req.body;
@@ -52,7 +52,7 @@ class typeController {
     }
 
     // удаление записи //
-    async deleteType(req, res, next) {
+    async deleteType(req, res) {
         try {
             const {id} = req.params;
     

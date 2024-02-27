@@ -5,7 +5,7 @@ const path = require('path')
 class productController {
 
     // создание нового продукта //
-    async addProduct(req, res, next) {
+    async addProduct(req, res) {
         try {
             let {name, price, productViewId, productTypeId, block, info} = req.body
             const {img} = req.files
@@ -94,7 +94,7 @@ class productController {
     }
 
     // редактирование продукта //
-    async editProduct(req, res, next) {
+    async editProduct(req, res) {
         try {
             const { id } = req.params;
             const { name, price, productViewId, productTypeId, block } = req.body;
@@ -128,7 +128,7 @@ class productController {
     }
 
     // удаление продукта //
-    async deleteProduct(req, res, next) {
+    async deleteProduct(req, res) {
         try {
             const {id} = req.params;
     

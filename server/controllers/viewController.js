@@ -2,7 +2,7 @@ const { ProductView } = require('../models/models')
 
 class viewController { 
     // создание записи //
-    async addView(req, res, next) {
+    async addView(req, res) {
         try {
             let { name } = req.body
             const view = await ProductView.create({ name })
@@ -32,7 +32,7 @@ class viewController {
     }
 
     // редактирование //
-    async editView(req, res, next) {
+    async editView(req, res) {
         try {
             const { id } = req.params;
             const { name } = req.body;
@@ -52,7 +52,7 @@ class viewController {
     }
 
     // удаление записи //
-    async deleteView(req, res, next) {
+    async deleteView(req, res) {
         try {
             const {id} = req.params;
     

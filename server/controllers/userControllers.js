@@ -10,7 +10,7 @@ const generateJwt = (data) => {
 
 class userController {
     // регистрация //
-    async registration(req, res, next) {
+    async registration(req, res) {
         const { name, telegramId, role, dateRegistration, chatId, address } = req.body;
 
         try {
@@ -24,7 +24,7 @@ class userController {
     }
 
     // обновление данных //
-    async updateUserData(req, res, next) {
+    async updateUserData(req, res) {
         const telegramId = req.params.id;
         const { name, role, chatId, address } = req.body;
 
@@ -47,7 +47,7 @@ class userController {
     }
 
     // обновление адреса пользователя по id //
-    async updateUserAddress(req, res, next) {
+    async updateUserAddress(req, res) {
         const id = req.params.id;
         const { address } = req.body;
 
@@ -70,7 +70,7 @@ class userController {
     }
 
     // изменение роли пользователя //
-    async updateUserRole(req, res, next) {
+    async updateUserRole(req, res) {
         const telegramId = req.params.id;
         const { role } = req.body;
 
@@ -93,7 +93,7 @@ class userController {
     }
 
     // получение пользователя по id телеграмма //
-    async getUserByTelegramId(req, res, next) {
+    async getUserByTelegramId(req, res) {
         const telegramId = req.params.id;
 
         try {
@@ -110,7 +110,7 @@ class userController {
     }
 
     // получение пользователя по id //
-    async getUserById(req, res, next) {
+    async getUserById(req, res) {
         const id = req.params.id;
         try {
             const user = await User.findOne({ where: { id: id } });
@@ -126,7 +126,7 @@ class userController {
     }
 
     // получение всех пользователей //
-    async getAllUsers(req, res, next) {
+    async getAllUsers(req, res) {
         try {
             const users = await User.findAll();
             return res.json({ users });
@@ -136,7 +136,7 @@ class userController {
     }
 
     // получение всех пользователей по ролям //
-    async getUsersByRole(req, res, next) {
+    async getUsersByRole(req, res) {
         const { role } = req.body;
 
         try {
@@ -153,7 +153,7 @@ class userController {
     }
 
     // удаление пользователя //
-    async deleteUserByTelegramId(req, res, next) {
+    async deleteUserByTelegramId(req, res) {
         const telegramId = req.params.id;
     
         try {
@@ -170,7 +170,7 @@ class userController {
     }
 
     // оценка пользователя о продукте //
-    async getUserProductRating(req, res, next) {
+    async getUserProductRating(req, res) {
         const { userId, productId } = req.params;
 
         try {
@@ -201,7 +201,7 @@ class userController {
     }
 
     // Добавление оценки пользователя к продукту
-    async addRating(req, res, next) {
+    async addRating(req, res) {
         const { userId, productId, rate } = req.body;
 
         try {

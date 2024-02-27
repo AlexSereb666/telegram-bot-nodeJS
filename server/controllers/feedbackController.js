@@ -3,7 +3,7 @@ const { Feedback } = require("../models/models");
 class feedbackController {
 
     // создание заявки в тех. поддержку //
-    async createFeedback(req, res, next) {
+    async createFeedback(req, res) {
         const { userId, title, message } = req.body;
         try {
             const feedback = await Feedback.create({ userId, title, message });
@@ -14,7 +14,7 @@ class feedbackController {
     }
 
     // изменение статуса заявки //
-    async updateFeedbackStatus(req, res, next) {
+    async updateFeedbackStatus(req, res) {
         const id = req.params.id;
         const { status } = req.body;
 
@@ -37,7 +37,7 @@ class feedbackController {
     }
 
     // выборка всех заявок //
-    async getAllFeedbacks(req, res, next) {
+    async getAllFeedbacks(req, res) {
         try {
             const feedbacks = await Feedback.findAll();
             return res.json({ feedbacks });
@@ -47,7 +47,7 @@ class feedbackController {
     }
 
     // выборка одной заявки по id //
-    async getFeedbackById(req, res, next) {
+    async getFeedbackById(req, res) {
         const id = req.params.id;
 
         try {
@@ -64,7 +64,7 @@ class feedbackController {
     }
 
     // выборка заявок конкретного пользователя //
-    async getFeedbackByUserId(req, res, next) {
+    async getFeedbackByUserId(req, res) {
         const userId = req.params.id;
 
         try {
@@ -81,7 +81,7 @@ class feedbackController {
     }
 
     // удаление заявки //
-    async deleteFeedbackById(req, res, next) {
+    async deleteFeedbackById(req, res) {
         const id = req.params.id;
     
         try {
