@@ -71,22 +71,29 @@ class promocodeController {
     // получить промокод по его коду и список продуктов к которому он применяется //
     async getPromoCodeByCode(req, res) {
         try {
-            const {code} = req.params
-            const promoCode = await PromoCode.findOne({ where: { code } });
+            const { code } = req.params;
+    
+            const promoCode = await PromoCode.findOne({ 
+                where: { 
+                    code,
+                    status: 'Активен',
+                    validUntilDate: { [Op.gt]: new Date() }
+                } 
+            });
+    
             if (!promoCode) {
                 return res.status(404).json({ message: `Промокод не найден` });
             }
-
-            // Находим список продуктов, к которым применяется данный промокод //
+    
             const products = await Product.findAll({
                 include: [{
                     model: PromoCodeProduct,
                     where: { promoCodeId: promoCode.id },
                 }]
             });
-
+    
             promoCode.dataValues.products = products;
-
+    
             return res.json({ promoCode });
         } catch (error) {
             return res.status(500).json({ message: error.message });
