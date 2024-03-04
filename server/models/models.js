@@ -72,11 +72,15 @@ const Feedback = sequelize.define('feedback', {
 const Order = sequelize.define('order', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     date: {type:DataTypes.DATE},
-    status: {type:DataTypes.STRING}
+    status: {type:DataTypes.STRING},
+    delivery: {type: DataTypes.BOOLEAN},
+    bank: {type: DataTypes.STRING},
+    phonePaymeny: {type: DataTypes.STRING}
 })
 
 const OrderProduct = sequelize.define('order_product', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    currentPrice: {type: DataTypes.FLOAT}
 })
 
 const HistoryMaintenance = sequelize.define('history_maintenance', {

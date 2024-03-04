@@ -28,7 +28,15 @@ const generateAdminMenu = async () => {
     ];
 };
 
+const generateChoicePayment = async () => {
+    return [
+        [{ text: 'Сбербанк' }, { text: 'Тинькофф' }, { text: 'Альфа-банк' }],
+        [{ text: 'Отменить оформление заказа' }],
+    ];
+};
+
 module.exports = {
     generateMenu,
     generateAdminMenu,
+    generateChoicePayment,
 };

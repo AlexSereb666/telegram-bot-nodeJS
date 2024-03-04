@@ -6,7 +6,17 @@ const infoBot = () => {
     return `Flex Coffee Bot - ваш персональный ассистент в мире кофе и десертов! Получайте рекомендации по кофейным напиткам, заказывайте уникальные сорта кофе и особенные десерты прямо через приложение Telegram. Будьте в курсе всех наших уникальных ивентов и акций, и получайте эксклюзивные предложения для подписчиков. Придерживайтесь правильного питания с нашими здоровыми и вкусными вариантами, без лишнего сахара. Наслаждайтесь моментом с Flex Coffee Bot!\n\nVersion 1.0.0`
 }
 
-module.exports = [
+const freeShippingThreshold = () => {
+    return 1000;
+}
+
+const costDelivery = () => {
+    return 180;
+}
+
+module.exports = {
     infoOrganization,
-    infoBot
-]
+    infoBot,
+    freeShippingThreshold,
+    costDelivery
+}
