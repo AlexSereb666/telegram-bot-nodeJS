@@ -7,6 +7,7 @@ const typeRouter = require('./typeRouter')
 const viewRouter = require('./viewRouter')
 const basketRouter = require('./basketRouter')
 const promocodeRouter = require('./promocodeRouter')
+const orderRouter = require('./orderRouter')
 
 router.use('/user', userRouter)
 router.use('/feedback', feedbackRouter)
@@ -15,5 +16,6 @@ router.use('/type', typeRouter)
 router.use('/view', viewRouter)
 router.use('/basket', basketRouter)
 router.use('/promocode', promocodeRouter)
+router.use('/order', orderRouter)
 
 module.exports = router

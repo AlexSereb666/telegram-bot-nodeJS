@@ -1,8 +1,8 @@
 const config = require('../config');
 
-const generateMenu = async (userRole, userId = 0) => {
+const generateMenu = async (userRole, userId) => {
     let menu = [
-        [{text: 'Меню 😋☕️', web_app: {url: config.WEB_URL + 'menu'}}],
+        [{text: 'Меню 😋☕️', web_app: {url: config.WEB_URL + 'menu?idUser=' + userId}}],
         [{text: 'Корзина 🛒', web_app: {url: config.WEB_URL + 'basket?idUser=' + userId}}],
         [{text: 'Мои данные 👤'}, {text: 'Мои заказы 📦'}],
         [{text: 'Информация об организации 🏢'}, {text: 'Информация о боте 🤖'}],
