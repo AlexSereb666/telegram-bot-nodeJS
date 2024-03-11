@@ -112,6 +112,7 @@ class orderProduct {
                     include: Product
                 }
             });
+
             return res.json(orders);
         } catch (error) {
             return res.status(500).json({ message: error.message });
