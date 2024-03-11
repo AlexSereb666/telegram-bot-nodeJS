@@ -2,9 +2,10 @@ const config = require('../config');
 
 const generateMenu = async (userRole, userId) => {
     let menu = [
-        [{text: 'Меню 😋☕️', web_app: {url: config.WEB_URL + 'menu?idUser=' + userId}}],
-        [{text: 'Корзина 🛒', web_app: {url: config.WEB_URL + 'basket?idUser=' + userId}}],
-        [{text: 'Мои данные 👤'}, {text: 'Мои заказы 📦'}],
+        [{text: 'Меню 😋☕️', web_app: {url: config.WEB_URL + 'menu/' + userId}}],
+        [{text: 'Корзина 🛒', web_app: {url: config.WEB_URL + 'basket/' + userId}}],
+        [{text: 'Мои данные 👤', web_app: {url: config.WEB_URL + 'personalData/' + userId}}, 
+        {text: 'Мои заказы 📦', web_app: {url: config.WEB_URL + 'personalOrders/' + userId}}],
         [{text: 'Информация об организации 🏢'}, {text: 'Информация о боте 🤖'}],
         [{text: 'Тех. поддержка 🛠️', web_app: {url: config.WEB_URL + 'feedback'}}]
     ];
@@ -13,7 +14,7 @@ const generateMenu = async (userRole, userId) => {
         menu.push([{text: 'Для администратора 👨‍💼'}])
     } else if (userRole === 'BARISTA') {
         menu.push([{text: 'Для бариста ☕'}])
-    }else if (userRole === 'COURIER') {
+    } else if (userRole === 'COURIER') {
         menu.push([{text: 'Для курьера 🛵'}])
     }
 

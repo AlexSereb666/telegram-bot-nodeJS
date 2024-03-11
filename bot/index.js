@@ -31,6 +31,7 @@ bot.on('message', async (msg) => {
                 await bot.sendMessage(msg.chat.id, "Вы успешно добавили продукты в корзину! Перейдите в меню корзины для оформления заказ 🛒")
             }
             else if (data.type === 'basketProducts') {
+                console.log(data?.delivery)
                 storage.setProductOrder(data)
 
                 const menuKeyboard = await generateChoicePayment()
