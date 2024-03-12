@@ -26,7 +26,22 @@ const getUserByTelegramId = async (telegramId) => {
     }
 }
 
+const updateNameUser = async (msg, user) => {
+    try {
+        const name = `${msg.from.first_name} ${msg.from.last_name}`;
+        const { data } = await $host.put(`api/user/updateData/${user.id}`, {name, role: user.role, chatId: user.chatId, address: user.address });
+        return data;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status
+        } else {
+            return 500;
+        }
+    }
+}
+
 module.exports = {
     userRegistration,
     getUserByTelegramId,
+    updateNameUser,
 };

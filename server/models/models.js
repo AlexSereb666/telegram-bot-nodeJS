@@ -75,7 +75,9 @@ const Order = sequelize.define('order', {
     status: {type:DataTypes.STRING},
     delivery: {type: DataTypes.BOOLEAN},
     bank: {type: DataTypes.STRING},
-    phonePayment: {type: DataTypes.STRING}
+    phonePayment: {type: DataTypes.STRING},
+    baristaId: {type:DataTypes.INTEGER},
+    courierId: {type:DataTypes.INTEGER}
 })
 
 const OrderProduct = sequelize.define('order_product', {

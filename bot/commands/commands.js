@@ -4,7 +4,8 @@ const { adminMenu } = require('../action/index')
 const { validatePhoneNumber } = require('../validation/index')
 const { addOrder, addProductToOrder } = require('../http/orderAPI')
 const { removeFromBasket } = require('../http/basketAPI')
-const { infoOrganization, infoBot } = require('../const/info')
+const { infoOrganization, infoBot } = require('../const/info');
+const { checkNameUser } = require('../action/user');
 
 const startCommand = async (bot, msg) => {
     const chatId = msg.chat.id;
@@ -13,6 +14,8 @@ const startCommand = async (bot, msg) => {
     try {
         const user = await getUserByTelegramId(telegramId);
         const menuKeyboard = await generateMenu(user.role, user.id);
+
+        checkNameUser(msg, user);
 
         if (user === 404) {
             await userRegistration(`${msg.from.first_name} ${msg.from.last_name}`, telegramId, 'USER', new Date(), chatId, 'Не указан');
