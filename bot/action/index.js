@@ -1,4 +1,4 @@
-const { generateAdminMenu } = require('../keyboard/generateKeyboard');
+const { generateAdminMenu, generateBaristaMenu } = require('../keyboard/generateKeyboard');
 
 const adminMenu = async (bot, msg) => {
     const chatId = msg.chat.id;
@@ -13,6 +13,20 @@ const adminMenu = async (bot, msg) => {
     });
 }
 
+const baristaMenu = async (bot, msg, userId) => {
+    const chatId = msg.chat.id;
+    const menuKeyboard = await generateBaristaMenu(userId);
+    
+    bot.sendMessage(chatId, `Вы вошли в меню Бариста! ☕`, {
+        reply_markup: {
+            keyboard: menuKeyboard,
+            resize_keyboard: true,
+            one_time_keyboard: true
+        }
+    });
+}
+
 module.exports = {
     adminMenu,
+    baristaMenu,
 };

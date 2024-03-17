@@ -1,12 +1,13 @@
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config');
+const storage = require('./store/index')
+
 const { startCommand, choiceMenu } = require('./commands/commands');
 const { feedbackAdd } = require('./action/feedback');
 const { productBasketAdd } = require('./action/basket');
 const { getUserByTelegramId } = require('./http/userAPI');
 const { generateChoicePayment } = require('./keyboard/generateKeyboard');
 const { freeShippingThreshold, costDelivery } = require('./const/info')
-const storage = require('./store/index')
 
 const token = config.TELEGRAM_BOT_TOKEN;
 
@@ -14,7 +15,7 @@ const bot = new TelegramBot(token, {polling: true});
 
 // первый контакт с ботом //
 bot.onText(/\/start/, async (msg) => {
-    startCommand(bot, msg);
+    startCommand(bot, msg, storage);
 });
 
 bot.on('message', async (msg) => {

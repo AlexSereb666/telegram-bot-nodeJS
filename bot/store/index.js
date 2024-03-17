@@ -4,6 +4,15 @@ class Storage {
         this._lastBotMessage = '';
         this._bank = '';
         this._phonePayment = '';
+        this._listOrdersUser = [];
+    }
+
+    setListOrdersUser(listOrdersUser) {
+        this._listOrdersUser = listOrdersUser;
+    }
+
+    get listOrdersUser() {
+        return this._listOrdersUser;
     }
 
     setPhonePayment(phonePayment) {

@@ -17,7 +17,7 @@ class orderProduct {
     async updateStatusOrder(req, res) {
         try {
             const { id } = req.params;
-            const { status } = req.body;
+            const { idUser, status } = req.body;
 
             let order = await Order.findOne({ where: { id } });
             if (!order) {
@@ -25,6 +25,7 @@ class orderProduct {
             }
 
             order.status = status;
+            order.baristaId = idUser;
             await order.save();
             
             return res.json(order);
@@ -134,6 +135,36 @@ class orderProduct {
                 return res.status(404).json({ message: `Заказ не найден` });
             }
             return res.json(order);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
+    // получить все незанятые заказы и заказы конкретного бариста //
+    async getUnassignedAndBaristaOrders(req, res) {
+        try {
+            const { id } = req.params;
+
+            // Найти все заказы, у которых поле baristaId пустое (null)
+            const unassignedOrders = await Order.findAll({ 
+                where: { baristaId: null }, 
+                include: { model: OrderProduct, include: Product } 
+            });
+    
+            // Найти все заказы, у которых id равен baristaId
+            const baristaOrders = await Order.findAll({ 
+                where: { baristaId: id }, 
+                include: { model: OrderProduct, include: Product } 
+            });
+            
+            // Объединить оба списка заказов
+            const allOrders = unassignedOrders.concat(baristaOrders);
+
+            if (allOrders.length === 0) {
+                return res.status(404).json({ message: `Заказы не найден` });
+            }
+    
+            return res.json(allOrders);
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }

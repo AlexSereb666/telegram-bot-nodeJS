@@ -6,6 +6,10 @@ const infoBot = () => {
     return `Flex Coffee Bot - ваш персональный ассистент в мире кофе и десертов!\n\nПолучайте рекомендации по кофейным напиткам, заказывайте уникальные сорта кофе и особенные десерты прямо через приложение Telegram.\n\nБудьте в курсе всех наших уникальных ивентов и акций, и получайте эксклюзивные предложения для подписчиков.\nПридерживайтесь правильного питания с нашими здоровыми и вкусными вариантами, без лишнего сахара.\n\nНаслаждайтесь моментом с Flex Coffee Bot!\n\nVersion 1.0.0`
 }
 
+const addressCompany = () => {
+    return 'г. Белгород, ул. Костюкова, дом 6'
+}
+
 const freeShippingThreshold = () => {
     return 1000;
 }
@@ -18,5 +22,6 @@ module.exports = {
     infoOrganization,
     infoBot,
     freeShippingThreshold,
-    costDelivery
+    costDelivery,
+    addressCompany,
 }

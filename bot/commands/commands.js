@@ -1,19 +1,36 @@
 const { getUserByTelegramId, userRegistration } = require('../http/userAPI');
 const { generateMenu } = require('../keyboard/generateKeyboard');
-const { adminMenu } = require('../action/index')
-const { validatePhoneNumber } = require('../validation/index')
-const { addOrder, addProductToOrder } = require('../http/orderAPI')
+const { adminMenu, baristaMenu } = require('../action/index')
+const { validatePhoneNumber, parseDate } = require('../validation/index')
+const { addOrder, addProductToOrder, getOrderOne } = require('../http/orderAPI')
 const { removeFromBasket } = require('../http/basketAPI')
-const { infoOrganization, infoBot } = require('../const/info');
+const { infoOrganization, infoBot, addressCompany } = require('../const/info');
 const { checkNameUser } = require('../action/user');
 
-const startCommand = async (bot, msg) => {
+const startCommand = async (bot, msg, storage) => {
     const chatId = msg.chat.id;
     const telegramId = msg.from.id;
     
     try {
         const user = await getUserByTelegramId(telegramId);
         const menuKeyboard = await generateMenu(user.role, user.id);
+
+        await getOrderOne(user.id).then((item) => storage.setListOrdersUser(item))
+        setInterval(async () => {
+            let listOrdersUserNew = [];
+            await getOrderOne(user.id).then((item) => listOrdersUserNew = item)
+            
+            storage.listOrdersUser.forEach((order, index) => {
+                if (order.status !== listOrdersUserNew[index].status) {
+                    bot.sendMessage(chatId,
+                        `Изменение статуса заказа ${order.id}: ${order.status} -> ${listOrdersUserNew[index].status}
+                        \n${parseDate(order.date)}
+                        ${listOrdersUserNew[index].status === 'Ожидает получения' ? `\n${addressCompany()}` : ''}`);
+                }
+            });
+
+            storage.setListOrdersUser(listOrdersUserNew);
+        }, 10000);
 
         checkNameUser(msg, user);
 
@@ -58,9 +75,15 @@ const choiceMenu = async (bot, msg, storage = null) => {
             adminMenu(bot, msg);
         } else if (text === 'Для администратора 👨‍💼') {
             bot.sendMessage(chatId, 'У Вас нет прав для входа в меню администратора 😢');
-        } 
+        }
 
-        if (text === 'Отменить оформление заказа') {
+        if (text === 'Для бариста ☕' && user.role === 'BARISTA') {
+            baristaMenu(bot, msg, user.id);
+        } else if (text === 'Для бариста ☕') {
+            bot.sendMessage(chatId, 'У Вас нет прав для входа в меню бариста 😢');
+        }
+
+        if (text === 'Отменить оформление заказа' || text === 'Вернуться в главное меню') {
             const menuKeyboard = await generateMenu(user.role, user.id);
             bot.sendMessage(msg.chat.id, `Главное меню Flex Coffee`, {
                 reply_markup: {
