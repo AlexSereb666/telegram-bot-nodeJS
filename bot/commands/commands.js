@@ -30,7 +30,7 @@ const startCommand = async (bot, msg, storage) => {
             });
 
             storage.setListOrdersUser(listOrdersUserNew);
-        }, 10000);
+        }, 5000);
 
         checkNameUser(msg, user);
 

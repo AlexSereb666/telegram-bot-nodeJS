@@ -161,10 +161,31 @@ class orderProduct {
             const allOrders = unassignedOrders.concat(baristaOrders);
 
             if (allOrders.length === 0) {
-                return res.status(404).json({ message: `Заказы не найден` });
+                return [];
             }
     
             return res.json(allOrders);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
+    // получить заказы конкретного бариста с определенным статусом //
+    async getBaristaOrdersWithStatus(req, res) {
+        try {
+            let { baristaId, status } = req.params;
+
+            status = status.replace(/_/g, ' ');
+
+            const orders = await Order.findAll({
+                where: { baristaId, status },
+                include: {
+                    model: OrderProduct,
+                    include: Product
+                }
+            });
+
+            return res.json(orders);
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }

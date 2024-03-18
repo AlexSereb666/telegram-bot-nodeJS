@@ -40,8 +40,22 @@ const updateNameUser = async (msg, user) => {
     }
 }
 
+const getUserById = async (id) => {
+    try {
+        const { data } = await $host.get(`api/user/getUserById/${id}`);
+        return data
+    } catch (error) {
+        if (error.response) {
+            return error.response.status
+        } else {
+            return 500;
+        }
+    }
+}
+
 module.exports = {
     userRegistration,
     getUserByTelegramId,
     updateNameUser,
+    getUserById,
 };

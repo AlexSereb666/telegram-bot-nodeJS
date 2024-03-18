@@ -31,7 +31,8 @@ const generateAdminMenu = async () => {
 
 const generateBaristaMenu = async (userId) => {
     return [
-        [{ text: 'Заказы 🛒', web_app: {url: config.WEB_URL + 'ordersBarista/' + userId}}, {text: 'Связь с курьерами 📞'}],
+        [{ text: 'Заказы 🛒', web_app: {url: config.WEB_URL + 'ordersBarista/' + userId}},
+        {text: 'Связь с курьерами 📞', web_app: {url: config.WEB_URL + 'listCourier/' + userId}}],
         [{ text: 'Вернуться в главное меню' }],
     ];
 };

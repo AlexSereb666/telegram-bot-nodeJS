@@ -5,7 +5,7 @@ const storage = require('./store/index')
 const { startCommand, choiceMenu } = require('./commands/commands');
 const { feedbackAdd } = require('./action/feedback');
 const { productBasketAdd } = require('./action/basket');
-const { getUserByTelegramId } = require('./http/userAPI');
+const { getUserByTelegramId, getUserById } = require('./http/userAPI');
 const { generateChoicePayment } = require('./keyboard/generateKeyboard');
 const { freeShippingThreshold, costDelivery } = require('./const/info')
 
@@ -25,13 +25,11 @@ bot.on('message', async (msg) => {
             const data = JSON.parse(msg.web_app_data.data)
             if (data.type === 'feedback') {
                 feedbackAdd(data, bot, msg)
-            }
-            else if (data.type === 'menuProducts') {
+            } else if (data.type === 'menuProducts') {
                 const user = await getUserByTelegramId(msg.from.id)
                 productBasketAdd(user.id, data.cartItems)
                 await bot.sendMessage(msg.chat.id, "Вы успешно добавили продукты в корзину! Перейдите в меню корзины для оформления заказ 🛒")
-            }
-            else if (data.type === 'basketProducts') {
+            } else if (data.type === 'basketProducts') {
                 console.log(data?.delivery)
                 storage.setProductOrder(data)
 
@@ -57,6 +55,9 @@ bot.on('message', async (msg) => {
                         one_time_keyboard: true
                     }
                 });
+            } else if (data.type === 'message') {
+                const user = await getUserById(data.idUser);
+                bot.sendMessage(user.user.chatId, data.message);
             }
         } catch (e) {
             console.log(e)
