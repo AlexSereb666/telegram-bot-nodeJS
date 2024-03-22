@@ -1,4 +1,4 @@
-const { Order, OrderProduct, Product } = require('../models/models');
+const { Order, OrderProduct, Product, User } = require('../models/models');
 
 class orderProduct {
     // создать заказ //
@@ -26,6 +26,26 @@ class orderProduct {
 
             order.status = status;
             order.baristaId = idUser;
+            await order.save();
+            
+            return res.json(order);
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    async updateStatusOrderCourier(req, res) {
+        try {
+            const { id } = req.params;
+            const { idUser, status } = req.body;
+
+            let order = await Order.findOne({ where: { id } });
+            if (!order) {
+                return res.status(404).json({ message: `Заказ не найден` });
+            }
+
+            order.status = status;
+            order.courierId = idUser;
             await order.save();
             
             return res.json(order);
@@ -184,6 +204,74 @@ class orderProduct {
                     include: Product
                 }
             });
+
+            return res.json(orders);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
+    // получить заказы конкретного курьера с определенным статусом //
+    async getCourierOrdersWithStatus(req, res) {
+        try {
+            let { courierId, status } = req.params;
+
+            status = status.replace(/_/g, ' ');
+
+            const orders = await Order.findAll({
+                where: { courierId, status, delivery: true },
+                include: {
+                    model: OrderProduct,
+                    include: Product
+                }
+            });
+
+            // Добавление адреса к каждому заказу
+            for (let i = 0; i < orders.length; i++) {
+                const order = orders[i];
+                const user = await User.findByPk(order.userId); // Находим пользователя по userId
+                if (user) {
+                    order.dataValues.address = user.address; // Добавляем адрес пользователя к заказу
+                }
+            }
+
+            if (orders.length === 0) {
+                return [];
+            }
+
+            return res.json(orders);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
+    // получить свободные заказы готовые для доставки //
+    async getCourierOrdersWithStatusFree(req, res) {
+        try {
+            let { status } = req.params;
+
+            status = status.replace(/_/g, ' ');
+
+            const orders = await Order.findAll({ 
+                where: { courierId: null, status, delivery: true }, 
+                include: {
+                    model: OrderProduct,
+                    include: Product
+                } 
+            });
+
+            // Добавление адреса к каждому заказу
+            for (let i = 0; i < orders.length; i++) {
+                const order = orders[i];
+                const user = await User.findByPk(order.userId); // Находим пользователя по userId
+                if (user) {
+                    order.dataValues.address = user.address; // Добавляем адрес пользователя к заказу
+                }
+            }
+
+            if (orders.length === 0) {
+                return [];
+            }
 
             return res.json(orders);
         } catch (error) {

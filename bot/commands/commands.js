@@ -1,6 +1,6 @@
 const { getUserByTelegramId, userRegistration } = require('../http/userAPI');
 const { generateMenu } = require('../keyboard/generateKeyboard');
-const { adminMenu, baristaMenu } = require('../action/index')
+const { adminMenu, baristaMenu, courierMenu } = require('../action/index')
 const { validatePhoneNumber, parseDate } = require('../validation/index')
 const { addOrder, addProductToOrder, getOrderOne } = require('../http/orderAPI')
 const { removeFromBasket } = require('../http/basketAPI')
@@ -83,6 +83,12 @@ const choiceMenu = async (bot, msg, storage = null) => {
             bot.sendMessage(chatId, 'У Вас нет прав для входа в меню бариста 😢');
         }
 
+        if (text === 'Для курьера 🛵' && user.role === 'COURIER') {
+            courierMenu(bot, msg, user.id);
+        } else if (text === 'Для курьера 🛵') {
+            bot.sendMessage(chatId, 'У Вас нет прав для входа в меню курьера 😢');
+        }
+
         if (text === 'Отменить оформление заказа' || text === 'Вернуться в главное меню') {
             const menuKeyboard = await generateMenu(user.role, user.id);
             bot.sendMessage(msg.chat.id, `Главное меню Flex Coffee`, {
@@ -92,7 +98,7 @@ const choiceMenu = async (bot, msg, storage = null) => {
                     one_time_keyboard: true
                 }
             });
-        }
+        } 
 
         if (text === 'Сбербанк' || text === 'Тинькофф' || text === 'Альфа-банк' ) {
             storage.setLastBotMessage('Отправь мне свой номер телефона к которому привязан банк 💵');

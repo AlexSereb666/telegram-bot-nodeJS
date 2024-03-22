@@ -37,6 +37,13 @@ const generateBaristaMenu = async (userId) => {
     ];
 };
 
+const generateCourierMenu = async (userId) => {
+    return [
+        [{ text: 'Меню заказов 🛒', web_app: {url: config.WEB_URL + 'ordersCourier/' + userId}}],
+        [{ text: 'Вернуться в главное меню' }],
+    ];
+};
+
 const generateChoicePayment = async () => {
     return [
         [{ text: 'Сбербанк' }, { text: 'Тинькофф' }, { text: 'Альфа-банк' }],
@@ -49,4 +56,5 @@ module.exports = {
     generateAdminMenu,
     generateChoicePayment,
     generateBaristaMenu,
+    generateCourierMenu,
 };
