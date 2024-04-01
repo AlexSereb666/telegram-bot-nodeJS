@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const {User, Basket, Product, Rating} = require('../models/models')
+const {User, Basket, Product, Rating, Feedback, Order} = require('../models/models')
 
 const generateJwt = (data) => {
     const dataObject = data.toJSON();
@@ -41,6 +41,31 @@ class userController {
             const [user] = updatedUser[1];
 
             return res.json({ message: 'Данные пользователя успешно обновлены', user });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // Удаление пользователя по id
+    async deleteUserById(req, res) {
+        const id = req.params.id;
+        try {
+            // Находим пользователя
+            const user = await User.findOne({ where: { id: id } });
+    
+            if (!user) {
+                return res.status(404).json({ message: `Пользователь с id ${id} не найден` });
+            }
+    
+            // Удаляем все связанные записи
+            await Feedback.destroy({ where: { userId: id } });
+            await Rating.destroy({ where: { userId: id } });
+            await Order.destroy({ where: { userId: id } });
+    
+            // Удаляем пользователя
+            await User.destroy({ where: { id: id } });
+    
+            return res.json({ message: `Пользователь с id ${id} успешно удален, а также все связанные записи` });
         } catch (e) {
             return res.status(500).json({ message: e.message });
         }

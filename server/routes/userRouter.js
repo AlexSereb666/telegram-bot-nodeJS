@@ -13,5 +13,6 @@ router.get('/getUserById/:id', userController.getUserById)
 router.put('/updateAddress/:id', userController.updateUserAddress)
 router.get('/users/:userId/products/:productId/rating', userController.getUserProductRating);
 router.post('/ratings', userController.addRating);
+router.delete('/deleteUserById/:id', userController.deleteUserById);
 
 module.exports = router

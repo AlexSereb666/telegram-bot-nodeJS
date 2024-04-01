@@ -1,5 +1,5 @@
 const { getUserByTelegramId, userRegistration } = require('../http/userAPI');
-const { generateMenu } = require('../keyboard/generateKeyboard');
+const { generateMenu, geterateDataManagement, generateAdminMenu } = require('../keyboard/generateKeyboard');
 const { adminMenu, baristaMenu, courierMenu } = require('../action/index')
 const { validatePhoneNumber, parseDate } = require('../validation/index')
 const { addOrder, addProductToOrder, getOrderOne } = require('../http/orderAPI')
@@ -12,31 +12,13 @@ const startCommand = async (bot, msg, storage) => {
     const telegramId = msg.from.id;
     
     try {
-        const user = await getUserByTelegramId(telegramId);
+        let user = await getUserByTelegramId(telegramId);
         const menuKeyboard = await generateMenu(user.role, user.id);
-
-        await getOrderOne(user.id).then((item) => storage.setListOrdersUser(item))
-        setInterval(async () => {
-            let listOrdersUserNew = [];
-            await getOrderOne(user.id).then((item) => listOrdersUserNew = item)
-            
-            storage.listOrdersUser.forEach((order, index) => {
-                if (order.status !== listOrdersUserNew[index].status) {
-                    bot.sendMessage(chatId,
-                        `Изменение статуса заказа ${order.id}: ${order.status} -> ${listOrdersUserNew[index].status}
-                        \n${parseDate(order.date)}
-                        ${listOrdersUserNew[index].status === 'Ожидает получения' ? `\n${addressCompany()}` : ''}`);
-                }
-            });
-
-            storage.setListOrdersUser(listOrdersUserNew);
-        }, 5000);
-
-        checkNameUser(msg, user);
 
         if (user === 404) {
             await userRegistration(`${msg.from.first_name} ${msg.from.last_name}`, telegramId, 'USER', new Date(), chatId, 'Не указан');
-
+            user = await getUserByTelegramId(telegramId);
+            
             bot.sendMessage(chatId, `Приветствуем Вас в Flex Coffee, ${msg.from.first_name}! 😊
             \nВы успешно зарегистрированы в системе!\nГотовы сделать Ваш первый заказ? 🥐☕️`, {
                 reply_markup: {
@@ -56,6 +38,25 @@ const startCommand = async (bot, msg, storage) => {
                 }
             });
         }
+
+        await getOrderOne(user.id).then((item) => storage.setListOrdersUser(item))
+        setInterval(async () => {
+            let listOrdersUserNew = [];
+            await getOrderOne(user.id).then((item) => listOrdersUserNew = item)
+            
+            storage.listOrdersUser.forEach((order, index) => {
+                if (order.status !== listOrdersUserNew[index].status) {
+                    bot.sendMessage(chatId,
+                        `Изменение статуса заказа ${order.id}: ${order.status} -> ${listOrdersUserNew[index].status}
+                        \n${parseDate(order.date)}
+                        ${listOrdersUserNew[index].status === 'Ожидает получения' ? `\n${addressCompany()}` : ''}`);
+                }
+            });
+
+            storage.setListOrdersUser(listOrdersUserNew);
+        }, 5000);
+
+        checkNameUser(msg, user);
     } catch (error) {
         console.error('Ошибка при обработке команды /start:', error);
         bot.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса. Попробуйте позже.');
@@ -98,7 +99,18 @@ const choiceMenu = async (bot, msg, storage = null) => {
                     one_time_keyboard: true
                 }
             });
-        } 
+        }
+
+        if (text === 'Вернуться в меню администратора' && user.role === 'ADMIN') {
+            const menuKeyboard = await generateAdminMenu();
+            bot.sendMessage(msg.chat.id, `Меню администратора`, {
+                reply_markup: {
+                    keyboard: menuKeyboard,
+                    resize_keyboard: true,
+                    one_time_keyboard: true
+                }
+            });
+        }
 
         if (text === 'Сбербанк' || text === 'Тинькофф' || text === 'Альфа-банк' ) {
             storage.setLastBotMessage('Отправь мне свой номер телефона к которому привязан банк 💵');
@@ -150,6 +162,17 @@ const choiceMenu = async (bot, msg, storage = null) => {
 
         if (text === 'Информация о боте 🤖') {
             bot.sendMessage(msg.chat.id, infoBot(), {
+                reply_markup: {
+                    keyboard: menuKeyboard,
+                    resize_keyboard: true,
+                    one_time_keyboard: true
+                }
+            });
+        }
+
+        if (text === 'Управление данными 🛢️' && user.role === 'ADMIN') {
+            const menuKeyboard = await geterateDataManagement(user.id);
+            bot.sendMessage(msg.chat.id, `Меню управление данными`, {
                 reply_markup: {
                     keyboard: menuKeyboard,
                     resize_keyboard: true,
