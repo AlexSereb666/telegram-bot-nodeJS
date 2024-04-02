@@ -1,4 +1,4 @@
-const { Product, ProductInfo, Rating } = require('../models/models');
+const { Product, ProductInfo, Rating, BasketProduct, OrderProduct, PromoCodeProduct } = require('../models/models');
 const uuid = require('uuid')
 const path = require('path')
 
@@ -130,18 +130,19 @@ class productController {
     // удаление продукта //
     async deleteProduct(req, res) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
     
-            // Проверяем, существует ли продукт с указанным ID //
+            // Проверяем, существует ли продукт
             const product = await Product.findOne({ where: { id } });
             if (!product) {
                 return res.status(404).json({ message: `Продукт не найден` });
             }
     
-            // Удаляем информацию о продукте //
             await ProductInfo.destroy({ where: { productId: id } });
+            await BasketProduct.destroy({ where: { productId: id } });
+            await OrderProduct.destroy({ where: { productId: id } });
+            await PromoCodeProduct.destroy({ where: { productId: id } });
     
-            // Удаляем сам продукт //
             await Product.destroy({ where: { id } });
     
             return res.json({ message: 'Продукт успешно удален' });

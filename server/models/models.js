@@ -15,7 +15,7 @@ const Basket = sequelize.define('basket', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
-const BasketProductr = sequelize.define('basket_product', {
+const BasketProduct = sequelize.define('basket_product', {
     id: {type:DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
@@ -107,8 +107,8 @@ Rating.belongsTo(User)
 User.hasMany(Order)
 Order.belongsTo(User)
 
-Basket.hasMany(BasketProductr)
-BasketProductr.belongsTo(Basket)
+Basket.hasMany(BasketProduct)
+BasketProduct.belongsTo(Basket)
 
 Product.hasMany(PromoCodeProduct)
 PromoCodeProduct.belongsTo(Product)
@@ -116,8 +116,8 @@ PromoCodeProduct.belongsTo(Product)
 PromoCode.hasMany(PromoCodeProduct)
 PromoCodeProduct.belongsTo(PromoCode)
 
-Product.hasMany(BasketProductr)
-BasketProductr.belongsTo(Product)
+Product.hasMany(BasketProduct)
+BasketProduct.belongsTo(Product)
 
 Product.hasMany(Rating)
 Rating.belongsTo(Product)
@@ -140,7 +140,7 @@ OrderProduct.belongsTo(Product)
 module.exports = {
     User,
     Basket,
-    BasketProductr,
+    BasketProduct,
     Product,
     ProductInfo,
     ProductType,

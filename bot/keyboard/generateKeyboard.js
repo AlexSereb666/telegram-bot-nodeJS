@@ -55,7 +55,7 @@ const generateChoicePayment = async () => {
 const geterateDataManagement = async (userId) => {
     return [
         [{text: 'Пользователи 👶', web_app: {url: config.WEB_URL + 'adminListUser/' + userId}}],
-        [{text: 'Продукты 🛍️'}],
+        [{text: 'Продукты 🛍️', web_app: {url: config.WEB_URL + 'adminListProduct/'}}],
         [{text: 'Промокоды 🤑'}],
         [{text: 'Вернуться в меню администратора'}]
     ]
