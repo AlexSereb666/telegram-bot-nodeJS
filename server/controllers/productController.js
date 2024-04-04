@@ -7,22 +7,11 @@ class productController {
     // создание нового продукта //
     async addProduct(req, res) {
         try {
-            let {name, price, productViewId, productTypeId, block, info} = req.body
+            let {name, price, productViewId, productTypeId, block} = req.body
             const {img} = req.files
             let fileName = uuid.v4() + ".jpg" 
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
             const product = await Product.create({name, price, productViewId, productTypeId, block, img: fileName})
-
-            if (info) {
-                info = JSON.parse(info)
-                info.forEach(i => {
-                    Product_info.create({
-                        title: i.title,
-                        description: i.description,
-                        productId: product.id
-                    })
-                });
-            }
   
             return res.json(product)
         } catch (e) {
@@ -99,12 +88,19 @@ class productController {
             const { id } = req.params;
             const { name, price, productViewId, productTypeId, block } = req.body;
             const { img } = req.files;
-            let fileName = uuid.v4() + ".jpg";
-            
+     
             // Проверяем, существует ли продукт с указанным ID //
             let product = await Product.findOne({ where: { id } });
             if (!product) {
                 return res.status(404).json({ message: `Продукт не найден` });
+            }
+
+            if (img) {
+                let fileName = uuid.v4() + ".jpg";
+                product.img = fileName;
+
+                // Перемещаем изображение на сервер //
+                img.mv(path.resolve(__dirname, '..', 'static', fileName));
             }
             
             // Обновляем данные продукта //
@@ -113,10 +109,6 @@ class productController {
             product.productViewId = productViewId;
             product.productTypeId = productTypeId;
             product.block = block;
-            product.img = fileName;
-            
-            // Перемещаем изображение на сервер //
-            img.mv(path.resolve(__dirname, '..', 'static', fileName));
             
             // Сохраняем изменения //
             await product.save();
@@ -146,6 +138,75 @@ class productController {
             await Product.destroy({ where: { id } });
     
             return res.json({ message: 'Продукт успешно удален' });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // Создать новое описание для выбранного продукта //
+    async createDescription(req, res) {
+        try {
+            const { productId, title, description } = req.body;
+
+            // Создаем новую запись с описанием для указанного продукта
+            const newDescription = await ProductInfo.create({ productId, title, description });
+
+            return res.status(201).json(newDescription);
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // получить все описание выбранного продукта //
+    async getDescriptionById(req, res) {
+        try {
+            const { productId } = req.params;
+            const productInfo = await ProductInfo.findAll({ where: { productId } }); // Находим информацию о продукте по его ID
+            if (!productInfo) {
+                return res.status(404).json({ message: "Информация о продукте не найдена" });
+            }
+            return res.status(200).json(productInfo);
+
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // Отредактировать описание выбранного продукта //
+    async editDescriptionById(req, res) {
+        try {
+            const { productId, descriptionId } = req.params;
+            const { title, description } = req.body;
+    
+            // Проверяем, существует ли такая запись описания для данного продукта
+            const existingDescription = await ProductInfo.findOne({ where: { id: descriptionId, productId: productId } });
+            if (!existingDescription) {
+                return res.status(404).json({ message: "Запись описания не найдена для указанного продукта" });
+            }
+    
+            // Обновляем информацию описания
+            await ProductInfo.update({ title, description }, { where: { id: descriptionId } });
+    
+            return res.status(200).json({ message: "Информация описания успешно отредактирована" });
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    // удалить описание выбранного продукта //
+    async deleteDescriptionById(req, res) {
+        try {
+            const { id } = req.params;
+    
+            // Проверяем, существует ли продукт
+            const desc = await ProductInfo.findOne({ where: { id } });
+            if (!desc) {
+                return res.status(404).json({ message: `Описание не найдено` });
+            }
+    
+            await ProductInfo.destroy({ where: { id } });
+    
+            return res.json({ message: 'Описание успешно удалено' });
         } catch (e) {
             return res.status(500).json({ message: e.message });
         }

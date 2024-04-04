@@ -25,7 +25,7 @@ class typeController {
     async getAll(req, res) {
         try {
             const types = await ProductType.findAll();
-            return res.json({ types });
+            return res.json(types);
         } catch (e) {
             return res.status(500).json({ message: e.message });
         }

@@ -25,7 +25,7 @@ class viewController {
     async getAll(req, res) {
         try {
             const views = await ProductView.findAll();
-            return res.json({ views });
+            return res.json(views);
         } catch (e) {
             return res.status(500).json({ message: e.message });
         }
