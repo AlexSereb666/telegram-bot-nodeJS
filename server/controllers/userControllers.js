@@ -9,6 +9,16 @@ const generateJwt = (data) => {
 };
 
 class userController {
+    // получить всех пользователей //
+    async getAllClient(req, res) {
+        try {
+            const users = await User.findAll();
+            return res.json(users);
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
     // регистрация //
     async registration(req, res) {
         const { name, telegramId, role, dateRegistration, chatId, address } = req.body;

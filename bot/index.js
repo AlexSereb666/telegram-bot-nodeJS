@@ -5,7 +5,7 @@ const storage = require('./store/index')
 const { startCommand, choiceMenu } = require('./commands/commands');
 const { feedbackAdd } = require('./action/feedback');
 const { productBasketAdd } = require('./action/basket');
-const { getUserByTelegramId, getUserById } = require('./http/userAPI');
+const { getUserByTelegramId, getUserById, getAllClient } = require('./http/userAPI');
 const { generateChoicePayment } = require('./keyboard/generateKeyboard');
 const { freeShippingThreshold, costDelivery } = require('./const/info')
 
@@ -58,6 +58,11 @@ bot.on('message', async (msg) => {
             } else if (data.type === 'message') {
                 const user = await getUserById(data.idUser);
                 bot.sendMessage(user.user.chatId, data.message);
+            } else if (data.type === 'messageAll') {
+                const users = await getAllClient();
+                users.map((item) => {
+                    bot.sendMessage(item.chatId, data.message);
+                })
             }
         } catch (e) {
             console.log(e)

@@ -24,9 +24,17 @@ const generateMenu = async (userRole, userId) => {
 const generateAdminMenu = async () => {
     return [
         [{ text: 'Управление данными 🛢️' }, { text: 'Мониторинг и учет 📊'}],
-        [{ text: 'Управление заказами 📋' }, {text: 'Обслуживание бота 👾'}],
+        [{ text: 'Управление заказами 📋', web_app: {url: config.WEB_URL + 'adminOrders'} }, {text: 'Обслуживание бота 👾'}],
         [{ text: 'Управление сотрудниками 👷‍♂️' }, {text: 'Взаимодействие с клиентами 😄'}],
         [{ text: 'Вернуться в главное меню'}]
+    ];
+};
+
+const generateAdminMenuClient = async (userId) => {
+    return [
+        [{ text: 'Техническая поддержка' }],
+        [{ text: 'Массовая рассылка', web_app: {url: config.WEB_URL + 'messageAll'}}],
+        [{ text: 'Вернуться в меню администратора' }]
     ];
 };
 
@@ -56,7 +64,7 @@ const geterateDataManagement = async (userId) => {
     return [
         [{text: 'Пользователи 👶', web_app: {url: config.WEB_URL + 'adminListUser/' + userId}}],
         [{text: 'Продукты 🛍️', web_app: {url: config.WEB_URL + 'adminListProduct/'}}],
-        [{text: 'Промокоды 🤑'}],
+        [{text: 'Промокоды 🤑', web_app: {url: config.WEB_URL + 'adminListPromo/'}}],
         [{text: 'Вернуться в меню администратора'}]
     ]
 }
@@ -68,4 +76,5 @@ module.exports = {
     generateBaristaMenu,
     generateCourierMenu,
     geterateDataManagement,
+    generateAdminMenuClient,
 };

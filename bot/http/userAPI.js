@@ -53,9 +53,15 @@ const getUserById = async (id) => {
     }
 }
 
+const getAllClient = async () => {
+    const { data } = await $host.get('api/user/getAllClient');
+    return data;
+}
+
 module.exports = {
     userRegistration,
     getUserByTelegramId,
     updateNameUser,
     getUserById,
+    getAllClient,
 };

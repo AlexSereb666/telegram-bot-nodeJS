@@ -54,6 +54,25 @@ class orderProduct {
         }
     }
 
+    async updateStatusOrderAdmin(req, res) {
+        try {
+            const { id } = req.params;
+            const { status } = req.body;
+
+            let order = await Order.findOne({ where: { id } });
+            if (!order) {
+                return res.status(404).json({ message: `Заказ не найден` });
+            }
+
+            order.status = status;
+            await order.save();
+            
+            return res.json(order);
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
     // удалить заказа //
     async deleteOrder(req, res) {
         try {

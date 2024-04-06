@@ -1,5 +1,6 @@
 const { getUserByTelegramId, userRegistration } = require('../http/userAPI');
-const { generateMenu, geterateDataManagement, generateAdminMenu } = require('../keyboard/generateKeyboard');
+const { generateMenu, geterateDataManagement,
+    generateAdminMenu, generateAdminMenuClient } = require('../keyboard/generateKeyboard');
 const { adminMenu, baristaMenu, courierMenu } = require('../action/index')
 const { validatePhoneNumber, parseDate } = require('../validation/index')
 const { addOrder, addProductToOrder, getOrderOne } = require('../http/orderAPI')
@@ -88,6 +89,19 @@ const choiceMenu = async (bot, msg, storage = null) => {
             courierMenu(bot, msg, user.id);
         } else if (text === 'Для курьера 🛵') {
             bot.sendMessage(chatId, 'У Вас нет прав для входа в меню курьера 😢');
+        }
+
+        if (text === 'Взаимодействие с клиентами 😄' && user.role === 'ADMIN') {
+            const menuKeyboard = await generateAdminMenuClient(user.id)
+            bot.sendMessage(msg.chat.id, `Взаимодействие с клиентами`, {
+                reply_markup: {
+                    keyboard: menuKeyboard,
+                    resize_keyboard: true,
+                    one_time_keyboard: true
+                }
+            });
+        } else if (text === 'Взаимодействие с клиентами 😄') {
+            bot.sendMessage(chatId, 'У Вас нет прав для входа в меню администратора 😢');
         }
 
         if (text === 'Отменить оформление заказа' || text === 'Вернуться в главное меню') {

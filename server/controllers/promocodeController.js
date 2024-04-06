@@ -199,6 +199,27 @@ class promocodeController {
             return res.status(500).json({ message: error.message });
         }
     }
+
+    // удалить связь между промокодом и продуктом по их id
+    async deletePromoCodeProduct(req, res) {
+        try {
+            const { promoCodeId, productId } = req.params;
+
+            // Проверяем, существует ли запись в PromoCodeProduct с указанными id промокода и продукта
+            const promoCodeProduct = await PromoCodeProduct.findOne({ where: { promoCodeId, productId } });
+
+            if (!promoCodeProduct) {
+                return res.status(404).json({ message: `Связь между промокодом и продуктом не найдена` });
+            }
+
+            // Удаляем запись из PromoCodeProduct
+            await PromoCodeProduct.destroy({ where: { promoCodeId, productId } });
+
+            return res.json({ message: 'Связь между промокодом и продуктом успешно удалена' });
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new promocodeController()

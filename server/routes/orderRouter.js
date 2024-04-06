@@ -15,5 +15,6 @@ router.get('/ordersBarista/:id', orderController.getUnassignedAndBaristaOrders)
 router.get('/getBaristaOrdersWithStatus/:baristaId/:status', orderController.getBaristaOrdersWithStatus)
 router.get('/getCourierOrdersWithStatus/:courierId/:status', orderController.getCourierOrdersWithStatus)
 router.get('/getCourierOrdersWithStatusFree/:status', orderController.getCourierOrdersWithStatusFree)
+router.put('/updateStatusOrderAdmin/:id', orderController.updateStatusOrderAdmin)
 
 module.exports = router

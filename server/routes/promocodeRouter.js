@@ -10,5 +10,6 @@ router.get('/product/:id', promocodeController.getPromoCodesByProduct);
 router.get('/current/:current', promocodeController.getAllPromoCodesCurrent);
 router.delete('/delete/:id', promocodeController.deletePromoCode);
 router.post('/addPromoCodeToProduct', promocodeController.addPromoCodeToProduct)
+router.delete('/deletePromoCodeProduct/:promoCodeId/:productId', promocodeController.deletePromoCodeProduct)
 
 module.exports = router
