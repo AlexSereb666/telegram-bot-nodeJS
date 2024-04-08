@@ -7,7 +7,9 @@ const { feedbackAdd } = require('./action/feedback');
 const { productBasketAdd } = require('./action/basket');
 const { getUserByTelegramId, getUserById, getAllClient } = require('./http/userAPI');
 const { generateChoicePayment } = require('./keyboard/generateKeyboard');
-const { freeShippingThreshold, costDelivery } = require('./const/info')
+const { freeShippingThreshold, costDelivery } = require('./const/info');
+const { getProductStatistics, getSalesStatistics,
+    getEmployeeStatistics, getClientStatistics } = require('./http/statisticsAPI');
 
 const token = config.TELEGRAM_BOT_TOKEN;
 
@@ -63,6 +65,55 @@ bot.on('message', async (msg) => {
                 users.map((item) => {
                     bot.sendMessage(item.chatId, data.message);
                 })
+            } else if (data.type === 'messageWork') {
+                const users = await getAllClient();
+                users.map((item) => {
+                    if (item.role !== 'USER') {
+                        bot.sendMessage(item.chatId, data.message);
+                    }
+                })
+            } else if (data.type === 'Продажи' || data.type === 'Продукты' 
+            || data.type === 'Клиенты' || data.type === 'Сотрудники') {
+
+                const user = await getUserByTelegramId(msg.from.id)
+                let message = `Результат запроса\n\n`
+
+                if (data.type === 'Продукты') {
+                    const list = await getProductStatistics(data.from, data.before)
+
+                    list.map((item) => {
+                        message += `${item.product} - продано: ${item.quantity} ед.\n`
+                    })
+
+                } else if (data.type === 'Продажи') {
+                    const list = await getSalesStatistics(data.from, data.before)
+
+                    message += `Всего заказов: ${list.totalOrders} ед.\n`
+                    message += `Продано продуктов: ${list.totalProductsSold} ед.\n`
+                    message += `Прибыль: ${list.totalRevenue} руб.\n`
+                    message += `Успешных заказов: ${list.completedOrders}\n`
+                    message += `Отмененных заказов: ${list.cancelledOrders}\n`
+
+                } else if (data.type === 'Сотрудники') {
+                    const list = await getEmployeeStatistics(data.from, data.before)
+
+                    list.map((item) => {
+                        message += `${item.name}\n`
+                        message += `${item.role === 'BARISTA' ? 'Бариста' : 'Курьер'}\n`
+                        message += `Выполнено заказов: ${item.successfulOrders}\n\n`
+                    })
+                } else if (data.type === 'Клиенты') {
+                    const list = await getClientStatistics(data.from, data.before)
+
+                    list.map((item) => {
+                        message += `${item.name}\n`
+                        message += `Сделано заказов: ${item.successfulOrders} ед.\n`
+                        message += `Отменено заказов: ${item.cancelledOrders} ед.\n`
+                        message += `Принес прибыли: ${item.totalRevenue} руб.\n\n`
+                    })
+                }
+
+                bot.sendMessage(user.chatId, message);
             }
         } catch (e) {
             console.log(e)

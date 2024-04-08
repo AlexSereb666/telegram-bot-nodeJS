@@ -66,7 +66,7 @@ const Feedback = sequelize.define('feedback', {
     title: {type:DataTypes.STRING},
     message: {type:DataTypes.STRING},
     date: {type: DataTypes.DATE, defaultValue: new Date()},
-    status: {type:DataTypes.STRING, defaultValue: 'Открыта'},
+    status: {type:DataTypes.STRING, defaultValue: 'Открыт'},
 })
 
 const Order = sequelize.define('order', {

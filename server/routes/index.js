@@ -8,6 +8,7 @@ const viewRouter = require('./viewRouter')
 const basketRouter = require('./basketRouter')
 const promocodeRouter = require('./promocodeRouter')
 const orderRouter = require('./orderRouter')
+const statisticsRouter = require('./statisticsRouter')
 
 router.use('/user', userRouter)
 router.use('/feedback', feedbackRouter)
@@ -17,5 +18,6 @@ router.use('/view', viewRouter)
 router.use('/basket', basketRouter)
 router.use('/promocode', promocodeRouter)
 router.use('/order', orderRouter)
+router.use('/statistics', statisticsRouter)
 
 module.exports = router
