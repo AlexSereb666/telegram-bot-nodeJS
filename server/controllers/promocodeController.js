@@ -76,7 +76,7 @@ class promocodeController {
             const promoCode = await PromoCode.findOne({ 
                 where: { 
                     code,
-                    status: 'Активен',
+                    status: 'Открыт',
                     validUntilDate: { [Op.gt]: new Date() }
                 } 
             });

@@ -77,6 +77,14 @@ const geterateDataManagement = async (userId) => {
     ]
 }
 
+const generateMaintenances = async () => {
+    return [
+        [{text: 'Запланировать обслуживание', web_app: {url: config.WEB_URL + 'scheduleMaintenance'}}],
+        [{text: 'Список обслуживаний', web_app: {url: config.WEB_URL + 'listMaintenance'}}],
+        [{text: 'Вернуться в меню администратора'}]
+    ]
+}
+
 module.exports = {
     generateMenu,
     generateAdminMenu,
@@ -86,4 +94,5 @@ module.exports = {
     geterateDataManagement,
     generateAdminMenuClient,
     generateAdminMenuWork,
+    generateMaintenances,
 };

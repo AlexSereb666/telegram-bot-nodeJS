@@ -1,7 +1,8 @@
 const { getUserByTelegramId, userRegistration } = require('../http/userAPI');
 const { generateMenu, geterateDataManagement,
     generateAdminMenu, generateAdminMenuClient, 
-    generateAdminMenuWork} = require('../keyboard/generateKeyboard');
+    generateAdminMenuWork,
+    generateMaintenances} = require('../keyboard/generateKeyboard');
 const { adminMenu, baristaMenu, courierMenu } = require('../action/index')
 const { validatePhoneNumber, parseDate } = require('../validation/index')
 const { addOrder, addProductToOrder, getOrderOne } = require('../http/orderAPI')
@@ -50,7 +51,7 @@ const startCommand = async (bot, msg, storage) => {
                 if (order.status !== listOrdersUserNew[index].status) {
                     bot.sendMessage(chatId,
                         `Изменение статуса заказа ${order.id}: ${order.status} -> ${listOrdersUserNew[index].status}
-                        \n${parseDate(order.date)}
+                        \n${parseDate(new Date())}
                         ${listOrdersUserNew[index].status === 'Ожидает получения' ? `\n${addressCompany()}` : ''}`);
                 }
             });
@@ -115,6 +116,19 @@ const choiceMenu = async (bot, msg, storage = null) => {
                 }
             });
         } else if (text === 'Управление сотрудниками 👷‍♂️') {
+            bot.sendMessage(chatId, 'У Вас нет прав для входа в меню администратора 😢');
+        }
+
+        if (text === 'Обслуживание бота 👾' && user.role === 'ADMIN') {
+            const menuKeyboard = await generateMaintenances()
+            bot.sendMessage(msg.chat.id, `Обслуживание бота`, {
+                reply_markup: {
+                    keyboard: menuKeyboard,
+                    resize_keyboard: true,
+                    one_time_keyboard: true
+                }
+            });
+        } else if (text === 'Обслуживание бота 👾') {
             bot.sendMessage(chatId, 'У Вас нет прав для входа в меню администратора 😢');
         }
 
